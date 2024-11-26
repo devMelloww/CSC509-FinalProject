@@ -7,23 +7,19 @@ public class Main extends JFrame {
     private ViewPanel viewPanel;
 
     public Main() {
-        // Set up the frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create the menu bar
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
 
-        // Create the upload menu item
         JMenuItem uploadItem = new JMenuItem("Upload Image");
-        uploadItem.addActionListener(e -> viewPanel.uploadImage());  // Trigger upload image in ViewPanel
+        uploadItem.addActionListener(e -> viewPanel.uploadImage());
         fileMenu.add(uploadItem);
 
         menuBar.add(fileMenu);
-        setJMenuBar(menuBar);  // Add the menu bar to the frame
+        setJMenuBar(menuBar);
 
-        // Create the ViewPanel and add it to the frame
         viewPanel = new ViewPanel();
         add(viewPanel, BorderLayout.CENTER);
     }

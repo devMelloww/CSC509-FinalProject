@@ -2,21 +2,20 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ViewPanel extends JPanel {
     private JLabel imageLabel;
-    private Timer processingTimer;
     private JLabel DYNAMIC_STATUS_LABEL;
+    private FileManager fileManager;
+    private PythonScriptExecutor scriptExecutor;
 
     public ViewPanel() {
-        setLayout(new BorderLayout());
+        fileManager = new FileManager();
+        scriptExecutor = new PythonScriptExecutor();
 
-        JPanel statusPanel = new JPanel();
-        statusPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        setLayout(new BorderLayout());
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         JLabel staticStatusLabel = new JLabel("Status: ");
         staticStatusLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -39,69 +38,35 @@ public class ViewPanel extends JPanel {
     }
 
     public void uploadImage() {
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "Image Files", "jpg", "jpeg", "png", "gif");
-        fileChooser.setFileFilter(filter);
-
-        int result = fileChooser.showOpenDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
+        File selectedFile = fileManager.selectImageFile(this);
+        if (selectedFile != null) {
             imageLabel.setIcon(null);
-            imageLabel.setText("Processing the image...");
+            imageLabel.setText("Processing...");
 
-            try {
-                // Run the Python script with the file path as an argument
-                ProcessBuilder processBuilder = new ProcessBuilder(
-                        "python3", "/Users/shivp/Desktop/FinalProjectPython/imageTracing/main/main.py", selectedFile.getAbsolutePath());
-                processBuilder.redirectErrorStream(true); // Redirect error stream to standard output
-                Process process = processBuilder.start();
+            boolean success = scriptExecutor.executeScript(
+                    "C://Users//shivp//Desktop//GuitarTabs//main//main.py",
+                    selectedFile.getAbsolutePath()
+            );
 
-                // Read the output from the Python script
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        System.out.println(line); // Optionally display in the console
-                    }
-                }
-
-                int exitCode = process.waitFor();
-                if (exitCode == 0) {
-                    setRunningStatus(); // Update GUI status on success
-                    imageLabel.setText("Image processing complete!");
-                } else {
-                    setIdleStatus();
-                    imageLabel.setText("Error in processing the image.");
-                }
-            } catch (Exception e) {
-                setIdleStatus();
+            if (success) {
+                onProcessingComplete();
+            } else {
                 imageLabel.setText("Error running Python script.");
-                e.printStackTrace();
             }
         }
     }
 
-
-    /**
-     * Sets the dynamic status label to display "Running" and changes its color to green.
-     */
-    public void setRunningStatus() {
+    private void setRunningStatus() {
         DYNAMIC_STATUS_LABEL.setText("Running");
         DYNAMIC_STATUS_LABEL.setForeground(Color.decode("#008000"));
     }
 
-    /**
-     * Sets the dynamic status label to display "Idle" and changes its color to red.
-     */
-    public void setIdleStatus() {
+    private void setIdleStatus() {
         DYNAMIC_STATUS_LABEL.setText("Idle");
         DYNAMIC_STATUS_LABEL.setForeground(Color.RED);
     }
 
     private void onProcessingComplete() {
         imageLabel.setText(null);
-        //setRunningStatus();
     }
 }
