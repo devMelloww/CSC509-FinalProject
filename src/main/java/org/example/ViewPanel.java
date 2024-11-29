@@ -44,7 +44,7 @@ public class ViewPanel extends JPanel {
             imageLabel.setText("Processing...");
 
             boolean success = scriptExecutor.executeScript(
-                    "C://Users//shivp//Desktop//GuitarTabs//main//main.py",
+                    "./ImageAnalyzer.py",
                     selectedFile.getAbsolutePath()
             );
 
