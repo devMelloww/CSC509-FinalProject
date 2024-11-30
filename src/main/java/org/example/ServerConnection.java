@@ -33,16 +33,26 @@ public class ServerConnection {
 
     public static void main(String[] args) {
         ServerConnection controller = new ServerConnection();
+        ContourParser parser = new ContourParser();
+        parser.ParseContours();
 
         try {
             controller.connect("localhost", 30002);
-            String moveCommand = "movej([0.0, -1.57, 0.0, -1.57, 0.0, 0.0], a=1.2, v=0.25)";
-            //String moveCommand = "movel(p[0.0, -1.57, 0.0, 0, -3.14, 0], a=1.2, v=0.25, r=0.01)";
-            controller.sendCommand(moveCommand);
-            Thread.sleep(5000);
+
+            ContourParser.Point point;
+            while ((point = parser.getPoint()) != null) {
+                //String moveCommand = "movej([0.0, -1.57, 0.0, -1.57, 0.0, 0.0], a=1.2, v=0.25)";
+                String moveCommand = String.format("movel(p[%.4f,%.4f,0.400,0,0,3.14], a=1.2, v=0.25, t=0, r=0)",
+                                                   point.getX(),
+                                                   point.getY());
+                controller.sendCommand(moveCommand);
+                Thread.sleep(5000); //wait 5 seconds
+            }
+
             controller.disconnect();
         } catch (IOException | InterruptedException e) {
             System.out.println("Error: " + e.getMessage());
         }
+
     }
 }

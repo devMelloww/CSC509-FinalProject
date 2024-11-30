@@ -20,11 +20,23 @@ def image_processing(image_path):
 
 def save_contours_to_json(contours, filename):
     # Convert contours to a serializable format (list of lists)
-    contours_list = [contour.squeeze().tolist() for contour in contours if contour.size > 0]
+#     contours_list = [contour.squeeze().tolist() for contour in contours if contour.size > 0]
 
-    # Save to JSON
-    with open(filename, 'w') as json_file:
-        json.dump(contours_list, json_file, indent=4)
+#     # Save to JSON
+#     with open(filename, 'w') as json_file:
+#         json.dump(contours_list, json_file, indent=4)
+
+    # change back to json format if time permits
+    with open(filename, 'w') as file:
+        for contour in contours:
+            if contour.size > 0:
+                point_list = contour.squeeze().tolist()
+                for point in point_list:
+                    if isinstance(point, int):
+                        file.write("0,{}\n".format(point))
+                    else:
+                        x, y = point
+                        file.write("{},{}\n".format(x,y))
 
     print(f"Contours saved to {filename}")
 
@@ -38,7 +50,7 @@ def main():
 
     try:
         contours, shape = image_processing(image_path)
-        save_contours_to_json(contours, filename='contours.json')
+        save_contours_to_json(contours, filename='contours.txt')
     except Exception as e:
         print(f"Error: {e}")
 
