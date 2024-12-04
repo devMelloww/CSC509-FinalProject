@@ -42,7 +42,7 @@ public class ServerConnection {
             ContourParser.Point point;
             while ((point = parser.getPoint()) != null) {
                 //String moveCommand = "movej([0.0, -1.57, 0.0, -1.57, 0.0, 0.0], a=1.2, v=0.25)";
-                String moveCommand = String.format("movel(p[%.4f,%.4f,0.400,0,0,3.14], a=1.2, v=0.25, t=0, r=0)",
+                String moveCommand = String.format("movel(p[-%.4f,%.4f,0.600,0,0,3.14], a=1.2, v=0.25, t=0, r=0)",
                                                    point.getX(),
                                                    point.getY());
                 controller.sendCommand(moveCommand);
