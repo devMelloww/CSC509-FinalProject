@@ -67,6 +67,21 @@ public class ViewPanel extends JPanel {
     }
 
     private void onProcessingComplete() {
-        imageLabel.setText(null);
+        String processedImagePath = "./traced_image.png";
+
+        File processedImageFile = new File(processedImagePath);
+        if (processedImageFile.exists()) {
+            ImageIcon imageIcon = new ImageIcon(processedImagePath);
+
+            Image scaledImage = imageIcon.getImage().getScaledInstance(
+                    imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH
+            );
+            imageIcon = new ImageIcon(scaledImage);
+
+            imageLabel.setIcon(imageIcon);
+            imageLabel.setText(null);
+        } else {
+            imageLabel.setText("Processed image not found.");
+        }
     }
 }

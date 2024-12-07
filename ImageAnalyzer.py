@@ -1,6 +1,7 @@
 import sys
 import cv2
 import json
+import numpy as np
 
 
 def image_processing(image_path):
@@ -41,6 +42,26 @@ def save_contours_to_json(contours, filename):
     print(f"Contours saved to {filename}")
 
 
+def tracing_image(contours, shape):
+    # Create a blank image of the same dimensions as the input image
+    height, width = shape
+    blank_image = np.zeros((height, width, 3), dtype=np.uint8)
+
+    # Draw all contours
+    for contour in contours:
+        cv2.drawContours(blank_image, [contour], -1, (255, 255, 255), 1)  # White lines for the contours
+
+    # Encode the image as PNG
+    success, encoded_image = cv2.imencode('.png', blank_image)
+    if success:
+        # Save the encoded image to a file
+        with open('traced_image.png', 'wb') as file:
+            file.write(encoded_image)
+        print("Image saved as 'traced_image.png'")
+    else:
+        print("Failed to encode the image.")
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python main.py <image_path>")
@@ -50,6 +71,7 @@ def main():
 
     try:
         contours, shape = image_processing(image_path)
+        tracing_image(contours, shape)
         save_contours_to_json(contours, filename='contours.txt')
     except Exception as e:
         print(f"Error: {e}")

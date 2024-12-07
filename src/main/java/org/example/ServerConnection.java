@@ -31,28 +31,25 @@ public class ServerConnection {
         System.out.println("Sent command: " + command);
     }
 
-    public static void main(String[] args) {
-        ServerConnection controller = new ServerConnection();
+    public void executeCommand(){
         ContourParser parser = new ContourParser();
         parser.ParseContours();
 
         try {
-            controller.connect("localhost", 30002);
+            connect("localhost", 30002);
 
             ContourParser.Point point;
             while ((point = parser.getPoint()) != null) {
                 //String moveCommand = "movej([0.0, -1.57, 0.0, -1.57, 0.0, 0.0], a=1.2, v=0.25)";
                 String moveCommand = String.format("movel(p[%.4f,%.4f,0.400,0,0,3.14], a=1.2, v=0.25, t=0, r=0)",
-                                                   point.getX(),
-                                                   point.getY());
-                controller.sendCommand(moveCommand);
+                        point.getX(),
+                        point.getY());
+                sendCommand(moveCommand);
                 Thread.sleep(5000); //wait 5 seconds
             }
-
-            controller.disconnect();
+            disconnect();
         } catch (IOException | InterruptedException e) {
             System.out.println("Error: " + e.getMessage());
         }
-
     }
 }
