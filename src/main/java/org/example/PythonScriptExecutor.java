@@ -23,7 +23,7 @@ public class PythonScriptExecutor {
             int exitCode = process.waitFor();
             return exitCode == 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             return false;
         }
     }

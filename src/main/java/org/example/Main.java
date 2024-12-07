@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main extends JFrame {
-    private ViewPanel viewPanel;
 
     public Main() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -13,14 +12,19 @@ public class Main extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
 
+        ViewPanel viewPanel = new ViewPanel();
         JMenuItem uploadItem = new JMenuItem("Upload Image");
         uploadItem.addActionListener(e -> viewPanel.uploadImage());
         fileMenu.add(uploadItem);
 
+        ServerConnection serverConnection = new ServerConnection();
+        JMenuItem cobotItem = new JMenuItem("Run Cobot");
+        cobotItem.addActionListener(e -> serverConnection.runCobot());
+        fileMenu.add(cobotItem);
+
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
 
-        viewPanel = new ViewPanel();
         add(viewPanel, BorderLayout.CENTER);
     }
 
