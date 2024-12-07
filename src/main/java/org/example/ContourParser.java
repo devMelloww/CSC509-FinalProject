@@ -29,7 +29,7 @@ public class ContourParser {
 
     private final List<Point> Points = new ArrayList<>();
     //Used to reduce scale of contours to within the 0-500mm range of the robot
-    public static final int SCALOR = 6000;
+    public static final int SCALOR = 10;
 
     public void ParseContours() {
         try(BufferedReader reader = new BufferedReader(new FileReader("./contours.txt"))) {
@@ -38,8 +38,12 @@ public class ContourParser {
                 String[] cords = line.split(",");
 
                 //Adjust x and y coordinates to fit within robot movement space
-                double x = Double.parseDouble(cords[0]) / SCALOR;
-                double y = Double.parseDouble(cords[1]) / SCALOR;
+                double x = Double.parseDouble(cords[0]);
+                double y = Double.parseDouble(cords[1]);
+                while (x > 0.5 || y > 0.5) {
+                    x /= SCALOR;
+                    y /= SCALOR;
+                }
 
                 Point point = new Point(x, y);
                 Points.add(point);
