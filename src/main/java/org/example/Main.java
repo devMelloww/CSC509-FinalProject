@@ -12,15 +12,22 @@ public class Main extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-
-        JMenuItem uploadItem = new JMenuItem("Upload Image");
-        uploadItem.addActionListener(e -> viewPanel.uploadImage());
-        fileMenu.add(uploadItem);
-
-        menuBar.add(fileMenu);
-        setJMenuBar(menuBar);
+        JMenu simulationMenu = new JMenu("Simulation");
 
         viewPanel = new ViewPanel();
+        ServerConnection serverConnection = new ServerConnection();
+
+        JMenuItem uploadItem = new JMenuItem("Upload Image");
+        JMenuItem simulateItem = new JMenuItem("Start Simulation");
+        uploadItem.addActionListener(e -> viewPanel.uploadImage());
+        simulateItem.addActionListener(e -> serverConnection.executeCommand());
+        fileMenu.add(uploadItem);
+        simulationMenu.add(simulateItem);
+
+        menuBar.add(fileMenu);
+        menuBar.add(simulationMenu);
+        setJMenuBar(menuBar);
+
         add(viewPanel, BorderLayout.CENTER);
     }
 

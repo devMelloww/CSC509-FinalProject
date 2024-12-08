@@ -20,9 +20,9 @@ public class ServerConnection {
     }
 
     public void disconnect() throws IOException {
-        if(in != null) in.close();
-        if(out != null) out.close();
-        if(socket != null) socket.close();
+        if (in != null) in.close();
+        if (out != null) out.close();
+        if (socket != null) socket.close();
         System.out.println("Disconnected from UR robot controller.");
     }
 
@@ -31,16 +31,31 @@ public class ServerConnection {
         System.out.println("Sent command: " + command);
     }
 
-    public static void main(String[] args) {
-        ServerConnection controller = new ServerConnection();
+    public void executeCommand() {
+        ContourParser parser = new ContourParser();
+
+        // Parse contours and populate the Blackboard
+        parser.ParseContours();
 
         try {
-            controller.connect("localhost", 30002);
-            String moveCommand = "movej([0.0, -1.57, 0.0, -1.57, 0.0, 0.0], a=1.2, v=0.25)";
-            //String moveCommand = "movel(p[0.0, -1.57, 0.0, 0, -3.14, 0], a=1.2, v=0.25, r=0.01)";
-            controller.sendCommand(moveCommand);
-            Thread.sleep(5000);
-            controller.disconnect();
+            connect("localhost", 30002);
+
+            while (!Blackboard.getInstance().isEmpty()) {
+                ContourParser.Point point = Blackboard.getInstance().getPoint();
+
+                if (point != null) {
+                    String moveCommand = String.format(
+                            "movel(p[%.4f, %.4f, 0.400, 0, 0, 3.14], a=1.2, v=0.25, t=0, r=0)",
+                            point.getX(),
+                            point.getY()
+                    );
+                    sendCommand(moveCommand);
+
+                    Thread.sleep(5000);
+                }
+            }
+
+            disconnect();
         } catch (IOException | InterruptedException e) {
             System.out.println("Error: " + e.getMessage());
         }
