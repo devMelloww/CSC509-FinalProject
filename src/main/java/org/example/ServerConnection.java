@@ -48,63 +48,61 @@ public class ServerConnection {
             double yaw = Math.PI; // End-effector faces forward
 
             while (!Blackboard.getInstance().isEmpty()) {
-                ContourParser.Point point = Blackboard.getInstance().getPoint();
+                Point point = Blackboard.getInstance().getPoint();
 
-                if (point != null) {
-                    // Calculate planar distance to the point
-                    double r = Math.sqrt(point.getX() * point.getX() + point.getY() * point.getY());
+                // Calculate planar distance to the point
+                double r = Math.sqrt(point.getX() * point.getX() + point.getY() * point.getY());
 
-                    // Validate reachability
-                    if (r > (URKinematics.getL1() + URKinematics.getL2())) {
-                        System.out.println("Point out of reach: " + point.getX() + ", " + point.getY());
-                        continue; // Skip to the next point
-                    }
-                    // Compute joint angles for travel to safe height
-                    double[] travelAngles = URKinematics.computeJointAngles(
-                            point.getX(),
-                            point.getY(),
-                            zTravel,
-                            roll,
-                            pitch,
-                            yaw
-                    );
+                // Validate reachability
+                if (r > (URKinematics.getL1() + URKinematics.getL2())) {
+                    System.out.println("Point out of reach: " + point.getX() + ", " + point.getY());
+                    continue; // Skip to the next point
+                }
+                // Compute joint angles for travel to safe height
+                double[] travelAngles = URKinematics.computeJointAngles(
+                        point.getX(),
+                        point.getY(),
+                        zTravel,
+                        roll,
+                        pitch,
+                        yaw
+                );
 
-                    String travelCommand = String.format(
-                            "movej([%.4f, %.4f, %.4f, %.4f, %.4f, %.4f], a=1.2, v=0.25)",
-                            travelAngles[0],
-                            travelAngles[1],
-                            travelAngles[2],
-                            travelAngles[3],
-                            travelAngles[4],
-                            travelAngles[5]
-                    );
-                    sendCommand(travelCommand);
+                String travelCommand = String.format(
+                        "movej([%.4f, %.4f, %.4f, %.4f, %.4f, %.4f], a=5, v=5)",
+                        travelAngles[0],
+                        travelAngles[1] - Math.PI/2,
+                        travelAngles[2] - Math.PI * 1.5,
+                        travelAngles[3],
+                        travelAngles[4],
+                        travelAngles[5]
+                );
+                sendCommand(travelCommand);
 
                     Thread.sleep(2000); // Wait for travel to complete
 
-                    // Compute joint angles for drawing height
-                    double[] drawAngles = URKinematics.computeJointAngles(
-                            point.getX(),
-                            point.getY(),
-                            zDraw,
-                            roll,
-                            pitch,
-                            yaw
-                    );
+                // Compute joint angles for drawing height
+                double[] drawAngles = URKinematics.computeJointAngles(
+                        point.getX(),
+                        point.getY(),
+                        zDraw,
+                        roll,
+                        pitch,
+                        yaw
+                );
 
-                    String drawCommand = String.format(
-                            "movej([%.4f, %.4f, %.4f, %.4f, %.4f, %.4f], a=1.2, v=0.25)",
-                            drawAngles[0],
-                            drawAngles[1],
-                            drawAngles[2],
-                            drawAngles[3],
-                            drawAngles[4],
-                            drawAngles[5]
-                    );
-                    sendCommand(drawCommand);
+                String drawCommand = String.format(
+                        "movej([%.4f, %.4f, %.4f, %.4f, %.4f, %.4f], a=5, v=5)",
+                        drawAngles[0],
+                        drawAngles[1] - Math.PI/2,
+                        drawAngles[2] - Math.PI * 1.5,
+                        drawAngles[3],
+                        drawAngles[4],
+                        drawAngles[5]
+                );
+                sendCommand(drawCommand);
 
-                    Thread.sleep(2000); // Wait for drawing to complete
-                }
+                Thread.sleep(2000); // Wait for drawing to complete
             }
 
             disconnect();
@@ -113,35 +111,3 @@ public class ServerConnection {
         }
     }
 }
-
-
-//    public void executeCommand() {
-//        ContourParser parser = new ContourParser();
-//
-//        // Parse contours and populate the Blackboard
-//        parser.ParseContours();
-//
-//        try {
-//            connect("localhost", 30002);
-//
-//            while (!Blackboard.getInstance().isEmpty()) {
-//                ContourParser.Point point = Blackboard.getInstance().getPoint();
-//
-//                if (point != null) {
-//                    String moveCommand = String.format(
-//                            "movel(p[%.4f, %.4f, 0.400, 0, 0, 3.14], a=1.2, v=0.25, t=0, r=0)",
-//                            point.getX(),
-//                            point.getY()
-//                    );
-//                    sendCommand(moveCommand);
-//
-//                    Thread.sleep(5000);
-//                }
-//            }
-//
-//            disconnect();
-//        } catch (IOException | InterruptedException e) {
-//            System.out.println("Error: " + e.getMessage());
-//        }
-//    }
-//}
