@@ -23,7 +23,7 @@ public class ViewPanel extends JPanel {
 
         DYNAMIC_STATUS_LABEL = new JLabel("Idle");
         DYNAMIC_STATUS_LABEL.setFont(new Font("Arial", Font.BOLD, 20));
-        DYNAMIC_STATUS_LABEL.setForeground(Color.RED);
+        setStatus("Idle", Color.decode("#FFA500"));
 
         statusPanel.add(staticStatusLabel);
         statusPanel.add(DYNAMIC_STATUS_LABEL);
@@ -56,14 +56,9 @@ public class ViewPanel extends JPanel {
         }
     }
 
-    private void setRunningStatus() {
-        DYNAMIC_STATUS_LABEL.setText("Running");
-        DYNAMIC_STATUS_LABEL.setForeground(Color.decode("#008000"));
-    }
-
-    private void setIdleStatus() {
-        DYNAMIC_STATUS_LABEL.setText("Idle");
-        DYNAMIC_STATUS_LABEL.setForeground(Color.RED);
+    public void setStatus(String status, Color color) {
+        DYNAMIC_STATUS_LABEL.setText(status);
+        DYNAMIC_STATUS_LABEL.setForeground(color);
     }
 
     private void onProcessingComplete() {
