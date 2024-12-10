@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main extends JFrame {
-    private ViewPanel viewPanel;
 
     public Main() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,7 +13,7 @@ public class Main extends JFrame {
         JMenu fileMenu = new JMenu("File");
         JMenu simulationMenu = new JMenu("Simulation");
 
-        viewPanel = new ViewPanel();
+        ViewPanel viewPanel = new ViewPanel();
         ServerConnection serverConnection = new ServerConnection();
 
         JMenuItem uploadItem = new JMenuItem("Upload Image");

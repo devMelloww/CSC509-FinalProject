@@ -4,8 +4,8 @@ public class URKinematics {
 
     private static final double L1 = 0.4; // Length of the first link
     private static final double L2 = 0.3; // Length of the second link
-    private static final double Z_SAFE = 0.2; // Safe height above the paper
-    private static final double Z_DRAW = 0.05; // Drawing height on the paper
+    //private static final double Z_SAFE = 0.2; // Safe height above the paper
+    //private static final double Z_DRAW = 0.05; // Drawing height on the paper
 
     public static double[] computeJointAngles(double x, double y, double z, double roll, double pitch, double yaw) {
         double[] jointAngles = new double[6];
