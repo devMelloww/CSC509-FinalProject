@@ -1,6 +1,10 @@
 # Robot Simulation Program - README
 Team Members: Damian Dhesi, Reza Mousakhani, Shiv Panchal
 
+## Project Intro
+
+The project uses Python to link image processing and robotic control, creating an automated system for drawing images. The process begins with a Python script that analyzes a given image, extracts key points or contours, and converts them into a set of coordinates. These coordinates represent the critical features of the image and are optimized to ensure smooth transitions between points. The resulting points are then passed to a collaborative robot (Cobot), which interprets these instructions and moves along a predefined static Z-plane to draw the image.
+
 ## Prerequisites
 
 Ensure the following software and tools are installed on your system:
