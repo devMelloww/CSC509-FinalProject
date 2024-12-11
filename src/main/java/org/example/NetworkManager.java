@@ -1,5 +1,8 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +24,7 @@ import java.net.Socket;
  * @version 1.0
  */
 public class NetworkManager {
+    private static final Logger logger = LoggerFactory.getLogger(NetworkManager.class);
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
@@ -49,7 +53,7 @@ public class NetworkManager {
         socket = new Socket(ip, port);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        System.out.println("Connected to UR robot controller at " + ip + ":" + port);
+        logger.info("Connected to UR robot controller at " + ip + ":" + port);
         statusUpdater.showMessage("Connected to UR robot controller at " + ip + ":" + port);
         statusUpdater.setStatus("Running", Color.decode("#008000"));
     }
@@ -64,7 +68,7 @@ public class NetworkManager {
         if (in != null) in.close();
         if (out != null) out.close();
         if (socket != null) socket.close();
-        System.out.println("Disconnected from UR robot controller.");
+        logger.info("Disconnected from UR robot controller at " + socket);
         statusUpdater.showMessage("Disconnected from UR robot controller.");
         statusUpdater.setStatus("Idle", Color.decode("#FFA500"));
     }
@@ -80,7 +84,7 @@ public class NetworkManager {
     public void sendCommand(String command) throws IOException {
         if (out != null) {
             out.println(command);
-            System.out.println("Sent command: " + command);
+            logger.info("Sent command: " + command);
         }
     }
 }

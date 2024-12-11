@@ -1,5 +1,8 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 import java.io.IOException;
 
@@ -19,6 +22,7 @@ public class CommandExecutor {
     private MovementController movementController;
     private StatusUpdater statusUpdater;
     private boolean running;
+    private static final Logger logger = LoggerFactory.getLogger(CommandExecutor.class);
 
     /**
      * Constructs a CommandExecutor with the specified dependencies.
@@ -47,6 +51,7 @@ public class CommandExecutor {
             parser.ParseContours();
 
             try {
+                logger.info("Connecting to cobot...");
                 networkManager.connect("localhost", 30002);
 
                 double zTravel = 0.2;
@@ -57,22 +62,24 @@ public class CommandExecutor {
 
                 while (running && !Blackboard.getInstance().isEmpty()) {
                     Point point = Blackboard.getInstance().getPoint();
+                    logger.debug("Processing point: {}", point);
 
                     try {
                         movementController.executeMovementSequence(point, zTravel, zDraw, roll, pitch, yaw);
                     } catch (IllegalArgumentException e) {
-                        System.out.println("Skipping point: " + e.getMessage());
+                        logger.warn("Skipping point: {}", e.getMessage());
                     }
 
                     if (!running) break;
                 }
 
                 networkManager.disconnect();
+                logger.info("Disconnected from cobot.");
             } catch (IOException e) {
+                logger.error("Connection error: {}", e.getMessage(), e);
                 statusUpdater.setStatus("Error", Color.RED);
-                System.out.println("Connection error: " + e.getMessage());
             } catch (InterruptedException e) {
-                System.out.println("Command execution interrupted: " + e.getMessage());
+                logger.error("Command execution interrupted: {}", e.getMessage(), e);
             }
         }).start();
     }
@@ -83,5 +90,6 @@ public class CommandExecutor {
      */
     public void stop() {
         running = false;
+        logger.info("Command execution stopped.");
     }
 }

@@ -1,5 +1,8 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.io.IOException;
  * @version 1.0
  */
 public class ContourParser {
+    private static final Logger logger = LoggerFactory.getLogger(ContourParser.class);
     public static final int SCALAR = 6000;
 
     /**
@@ -38,7 +42,7 @@ public class ContourParser {
                 Blackboard.getInstance().addPoint(point);
             }
         } catch (IOException e) {
-            System.err.println("Error reading contours file: " + e.getMessage());
+            logger.error("Error reading contours file: " + e.getMessage());
         }
     }
 }
