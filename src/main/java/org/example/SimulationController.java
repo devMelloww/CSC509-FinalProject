@@ -1,5 +1,8 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 import java.io.IOException;
 
@@ -15,6 +18,7 @@ import java.io.IOException;
  * @version 1.0
  */
 public class SimulationController {
+    private static final Logger logger = LoggerFactory.getLogger(SimulationController.class);
     private final CommandExecutor commandExecutor;
     private final NetworkManager networkManager;
     private final StatusUpdater statusUpdater;
@@ -39,6 +43,8 @@ public class SimulationController {
      */
     public void startSimulation() {
         commandExecutor.executeCommand();
+        logger.info("Simulation started");
+
     }
 
     /**
@@ -50,10 +56,13 @@ public class SimulationController {
      * @throws RuntimeException if there is an error while disconnecting from the network
      */
     public void stopSimulation() {
+        logger.info("Stopping simulation...");
         commandExecutor.stop();
+        logger.info("Simulation stopped successfully.");
         try {
             networkManager.disconnect();
         } catch (IOException e) {
+            logger.error("Error while disconnecting network: {}", e.getMessage(), e);
             statusUpdater.setStatus("Error", Color.RED);
             throw new RuntimeException("Error stopping simulation: " + e.getMessage(), e);
         }
