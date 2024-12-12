@@ -1,5 +1,8 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class provides methods to compute the joint angles for a robotic arm based on its
  * end-effector's position and orientation in 3D space.
@@ -13,7 +16,7 @@ package org.example;
  * @version 1.0
  */
 public class URKinematics {
-
+    private static final Logger logger = LoggerFactory.getLogger(URKinematics.class);
     private static final double L1 = 0.4;
     private static final double L2 = 0.3;
 
@@ -52,6 +55,7 @@ public class URKinematics {
 
         double denominator = (L1 + L2 * cosTheta2);
         if (Math.abs(denominator) < 1e-6) {
+            logger.error("Denominator too small for stable computation.");
             throw new ArithmeticException("Denominator too small for stable computation.");
         }
 
